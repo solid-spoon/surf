@@ -49,6 +49,8 @@ static Parameter defconfig[ParameterLast] = {
 	[ZoomLevel]           =       { { .f = 1.0 },   },
 };
 
+static const char *togglecmd[] = { "surf-toggle", NULL };
+
 static UriParameters uriparams[] = {
 	{ "(://|\\.)suckless\\.org(/|$)", {
 	  [JavaScript] = { { .i = 0 }, 1 },
@@ -179,6 +181,7 @@ static Key keys[] = {
 	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_t,      toggle,     { .i = StrictTLS } },
 	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_m,      toggle,     { .i = Style } },
 	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_d,      toggle,     { .i = DarkMode } },
+	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_y,      spawn,      { .v = togglecmd } },
 };
 
 /* button definitions */
