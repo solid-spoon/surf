@@ -38,7 +38,7 @@
 #define LENGTH(x)               (sizeof(x) / sizeof(x[0]))
 #define CLEANMASK(mask)         (mask & (MODKEY|GDK_SHIFT_MASK))
 
-enum { AtomFind, AtomGo, AtomUri, AtomUTF8, AtomLast };
+enum { AtomFind, AtomGo, AtomUri, AtomUTF8, AtomToggle, AtomLast };
 
 enum {
 	OnDoc   = WEBKIT_HIT_TEST_RESULT_CONTEXT_DOCUMENT,
@@ -260,6 +260,17 @@ static int modparams[ParameterLast];
 static int spair[2];
 char *argv0;
 
+static const char *paramnames[] = {
+	"AccessMicrophone", "AccessWebcam", "CaretBrowsing", "Certificate",
+	"CookiePolicies", "DarkMode", "DiskCache", "DefaultCharset",
+	"DNSPrefetch", "Ephemeral", "FileURLsCrossAccess", "FontSize",
+	"Geolocation", "HideBackground", "Inspector", "JavaScript",
+	"KioskMode", "LoadImages", "MediaManualPlay", "PDFJSviewer",
+	"PreferredLanguages", "RunInFullscreen", "ScrollBars",
+	"ShowIndicators", "SiteQuirks", "SmoothScrolling", "SpellChecking",
+	"SpellLanguages", "StrictTLS", "Style", "WebGL", "ZoomLevel"
+};
+
 static ParamName loadtransient[] = {
 	Certificate,
 	CookiePolicies,
@@ -344,6 +355,7 @@ setup(void)
 	atoms[AtomGo] = XInternAtom(dpy, "_SURF_GO", False);
 	atoms[AtomUri] = XInternAtom(dpy, "_SURF_URI", False);
 	atoms[AtomUTF8] = XInternAtom(dpy, "UTF8_STRING", False);
+	atoms[AtomToggle] = XInternAtom(dpy, "_SURF_TOGGLE", False);
 
 	gtk_init(NULL, NULL);
 
@@ -1302,6 +1314,18 @@ processx(GdkXEvent *e, GdkEvent *event, gpointer d)
 				loaduri(c, &a);
 
 				return GDK_FILTER_REMOVE;
+			}} else if (ev->atom == atoms[AtomToggle]) {
+			    char *name = strdup(getatom(c, AtomToggle));
+			    int i;
+			    for (i = 0; i < ParameterLast; i++) {
+			        if (strcmp(name, paramnames[i]) == 0) {
+			            Arg ta = { .i = i };
+			            toggle(c, &ta);
+			            break;
+			        }
+			    }
+			    free(name);
+			    return GDK_FILTER_REMOVE;
 			}
 		}
 	}
