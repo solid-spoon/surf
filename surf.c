@@ -736,7 +736,7 @@ const char *
 
     XSync(dpy, False);
     XGetWindowProperty(dpy, c -> xid,
-      atoms[a], 0 L, BUFSIZ, False, atoms[AtomUTF8], &
+      atoms[a], 0L, BUFSIZ, False, atoms[AtomUTF8], &
       adummy, & idummy, & ldummy, & ldummy, & p);
     if (p)
       strncpy(buf, (char * ) p, LENGTH(buf) - 1);
